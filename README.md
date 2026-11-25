@@ -46,7 +46,7 @@ Open http://localhost:3000/login and sign in as the founder to reach the Command
 ## Tests
 
 ```bash
-pnpm test        # 38 tests: auth, tenant isolation, pricing, approvals, invoices and payments
+pnpm test        # 41 tests: auth, tenant isolation, pricing, approvals, invoices and payments
 pnpm typecheck
 pnpm build
 ```
