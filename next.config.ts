@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@electric-sql/pglite"],
   poweredByHeader: false,
+  // The one-time setup page applies migrations, so ship the SQL files with it.
+  outputFileTracingIncludes: { "/setup": ["./drizzle/**/*"] },
   async headers() {
     return [
       {

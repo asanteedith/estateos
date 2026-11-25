@@ -51,3 +51,24 @@ export async function createPgliteDb(dataDir?: string): Promise<Db> {
 export function setDbForTesting(db: Db | null) {
   dbPromise = db ? Promise.resolve(db) : null;
 }
+
+/**
+ * Applies pending migrations to the configured database. PGlite databases
+ * migrate themselves on connect; for Postgres this uses a short-lived connection.
+ */
+export async function migrateConfiguredDb() {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    await getDb();
+    return;
+  }
+  const { default: postgres } = await import("postgres");
+  const { drizzle } = await import("drizzle-orm/postgres-js");
+  const { migrate } = await import("drizzle-orm/postgres-js/migrator");
+  const client = postgres(url, { max: 1, prepare: false, onnotice: () => {} });
+  try {
+    await migrate(drizzle(client), { migrationsFolder: MIGRATIONS });
+  } finally {
+    await client.end();
+  }
+}
